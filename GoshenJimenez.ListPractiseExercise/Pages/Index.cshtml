@@ -1,0 +1,54 @@
+﻿@page
+@model Index
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Name                 
+                <div class="btn-group" role="group" aria-label="">
+                    <a href="~/index?sortBy=name&sortAsc=false" type="button" class="btn btn-secondary"><i class="bi bi-arrow-bar-down"></i></a>
+                    <a href="~/index?sortBy=name&sortAsc=true" type="button" class="btn btn-secondary"><i class="bi bi-arrow-bar-up"></i></a>
+                </div>
+            </th>
+            <th scope="col">Powers
+                <div class="btn-group" role="group" aria-label="">
+                    <a href="~/index?sortBy=powers&sortAsc=false" type="button" class="btn btn-secondary"><i class="bi bi-arrow-bar-down"></i></a>
+                    <a href="~/index?sortBy=powers&sortAsc=true" type="button" class="btn btn-secondary"><i class="bi bi-arrow-bar-up"></i></a>
+                </div>
+            </th>
+            <th scope="col">Home Plane
+                <div class="btn-group" role="group" aria-label="">
+                    <a href="~/index?sortBy=homeplane&sortAsc=false" type="button" class="btn btn-secondary"><i class="bi bi-arrow-bar-down"></i></a>
+                    <a href="~/index?sortBy=homeplane&sortAsc=true" type="button" class="btn btn-secondary"><i class="bi bi-arrow-bar-up"></i></a>
+                </div>
+            </th>
+            <th scope="col">
+                Colors                
+                <div class="btn-group" role="group" aria-label="">
+                    <a href="~/index?sortBy=colors&sortAsc=false" type="button" class="btn btn-secondary"><i class="bi bi-arrow-bar-down"></i></a>
+                    <a href="~/index?sortBy=colors&sortAsc=true" type="button" class="btn btn-secondary"><i class="bi bi-arrow-bar-up"></i></a>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var character in Model.Characters)
+        {
+        <tr>
+            <td>@character.Name</td>
+            <td>@character.Powers</td>
+            <td>@character.HomePlane</td>
+            <td>@character.Colors</td>
+        </tr>
+        }
+    </tbody>
+</table>
