@@ -9,6 +9,18 @@
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
+<div class="input-group mb-3">
+        <label class="input-group-text" for="searchBy">Search By</label>
+        <select class="form-select" id="searchBy" asp-for="SearchParams.SearchBy">
+            <option value="" selected>Choose...</option>
+            <option value="Name">Name</option>
+            <option value="Powers">Powers</option>
+            <option value="HomePlane">Home Plane</option>
+            <option value="Colors">Colors</option>
+        </select>
+        <input type="text" id="keyword" class="form-control" asp-for="SearchParams.Keyword">
+        <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="search()"><i class="bi bi-search"></i></button>
+</div>
 
 <table class="table">
     <thead>
@@ -52,3 +64,11 @@
         }
     </tbody>
 </table>
+
+@section Scripts{
+    <script>
+        function search() {
+            window.location = "../index?sortBy=homeplane&sortAsc=false&searchBy=" + $("#searchBy").val() + "&keyword=" +  $("#keyword").val()
+        }
+    </script>
+} 

@@ -14,8 +14,23 @@ namespace GoshenJimenez.ListPractiseExercise.Pages
 
         public List<Character> Characters { get; set; }
 
-        public void OnGet(string? sortBy = null,string? sortAsc = "true")
+        [BindProperty]
+        public SearchParameters? SearchParams { get; set; }
+
+
+        public void OnGet(string? keyword = "", string? searchBy = "", string? sortBy = null, string? sortAsc = "true")
         {
+            if (SearchParams == null)
+            {
+                SearchParams = new SearchParameters()
+                {
+                    SortBy = sortBy,
+                    SortAsc = sortAsc == "true",
+                    SearchBy = searchBy,
+                    Keyword = keyword
+                };
+            }
+
             List<Character>? characters = new List<Character>()
             {
                 new Character () {
@@ -146,46 +161,70 @@ namespace GoshenJimenez.ListPractiseExercise.Pages
                   }
             };
 
-            if(sortBy == null || sortAsc == null)
+            if (SearchParams.SortBy == null || SearchParams.SortAsc == null)
             {
                 this.Characters = characters;
                 return;
             }
 
+            if (!string.IsNullOrEmpty(SearchParams.SearchBy) && !string.IsNullOrEmpty(SearchParams.Keyword))
+            {
 
-            if(sortBy!.ToLower() == "name" && sortAsc!.ToLower() == "true")
+                if (SearchParams.SearchBy.ToLower() == "name")
+                {
+                    characters = characters.Where(a => a.Name != null && a.Name.ToLower().Contains(SearchParams.Keyword.ToLower())).ToList();
+                }
+                else if (SearchParams.SearchBy.ToLower() == "powers")
+                {
+                    characters = characters.Where(a => a.Powers != null && a.Powers.ToLower().Contains(SearchParams.Keyword.ToLower())).ToList();
+                }
+                else if (SearchParams.SearchBy.ToLower() == "homeplane")
+                {
+                    characters = characters.Where(a => a.HomePlane != null && a.HomePlane.ToLower().Contains(SearchParams.Keyword.ToLower())).ToList();
+                }
+                else if (SearchParams.SearchBy.ToLower() == "colors")
+                {
+                    characters = characters.Where(a => a.Colors != null && a.Colors.ToLower().Contains(SearchParams.Keyword.ToLower())).ToList();
+                }
+            }
+            else if ((string.IsNullOrEmpty(SearchParams.SearchBy) || SearchParams.SearchBy == "") && !string.IsNullOrEmpty(SearchParams.Keyword))
+            {
+                characters = characters.Where(a => a.Name != null && a.Name.ToLower().Contains(SearchParams.Keyword.ToLower())).ToList();
+            }
+
+            if(SearchParams.SortBy!.ToLower() == "name" && SearchParams.SortAsc == true)
             {
                 this.Characters = characters.OrderBy(a => a.Name).ToList();
             }
-            else if (sortBy!.ToLower() == "name" && sortAsc!.ToLower() == "false")
+            else if (SearchParams.SortBy!.ToLower() == "name" && SearchParams.SortAsc == false)
             {
                 this.Characters = characters.OrderByDescending(a => a.Name).ToList();
             }
-            else if (sortBy!.ToLower() == "powers" && sortAsc!.ToLower() == "true")
+            else if (SearchParams.SortBy!.ToLower() == "powers" && SearchParams.SortAsc == true)
             {
                 this.Characters = characters.OrderBy(a => a.Powers).ToList();
             }
-            else if (sortBy!.ToLower() == "powers" && sortAsc!.ToLower() == "false")
+            else if (SearchParams.SortBy!.ToLower() == "powers" && SearchParams.SortAsc == false)
             {
                 this.Characters = characters.OrderByDescending(a => a.Powers).ToList();
             }
-            else if (sortBy!.ToLower() == "homeplane" && sortAsc!.ToLower() == "true")
+            else if (SearchParams.SortBy!.ToLower() == "homeplane" && SearchParams.SortAsc == true)
             {
                 this.Characters = characters.OrderBy(a => a.HomePlane).ToList();
             }
-            else if (sortBy!.ToLower() == "homeplane" && sortAsc!.ToLower() == "false")
+            else if (SearchParams.SortBy!.ToLower() == "homeplane" && SearchParams.SortAsc == false)
             {
                 this.Characters = characters.OrderByDescending(a => a.HomePlane).ToList();
             }
-            else if (sortBy!.ToLower() == "powers" && sortAsc!.ToLower() == "false")
+            else if (SearchParams.SortBy!.ToLower() == "powers" && SearchParams.SortAsc == false)
             {
                 this.Characters = characters.OrderByDescending(a => a.Powers).ToList();
             }
-            else if (sortBy!.ToLower() == "colors" && sortAsc!.ToLower() == "true")
+            else if (SearchParams.SortBy!.ToLower() == "colors" && SearchParams.SortAsc == true)
             {
                 this.Characters = characters.OrderBy(a => a.Colors).ToList();
             }
-            else if (sortBy!.ToLower() == "colors" && sortAsc!.ToLower() == "false")
+            else if (SearchParams.SortBy!.ToLower() == "colors" && SearchParams.SortAsc == false)
             {
                 this.Characters = characters.OrderByDescending(a => a.Colors).ToList();
             }
@@ -202,6 +241,15 @@ namespace GoshenJimenez.ListPractiseExercise.Pages
             public string? HomePlane { get; set; }
             public string? Colors { get; set; }
 
+        }
+
+
+        public class SearchParameters
+        {
+            public string? SearchBy { get; set; }
+            public string? Keyword { get; set; }            
+            public string? SortBy { get; set; }
+            public bool? SortAsc { get; set; } 
         }
     }
 }
