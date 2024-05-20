@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace GoshenJimenez.ListPractiseExercise.Pages
 {
@@ -18,8 +22,9 @@ namespace GoshenJimenez.ListPractiseExercise.Pages
         public SearchParameters? SearchParams { get; set; }
 
 
-        public void OnGet(string? keyword = "", string? searchBy = "", string? sortBy = null, string? sortAsc = "true")
+        public void OnGet(string? keyword = "", string? searchBy = "", string? sortBy = null, string? sortAsc = "true", int pageSize = 5, int pageIndex = 1)
         {
+
             if (SearchParams == null)
             {
                 SearchParams = new SearchParameters()
@@ -27,7 +32,9 @@ namespace GoshenJimenez.ListPractiseExercise.Pages
                     SortBy = sortBy,
                     SortAsc = sortAsc == "true",
                     SearchBy = searchBy,
-                    Keyword = keyword
+                    Keyword = keyword,
+                    PageIndex = pageIndex,
+                    PageSize = pageSize
                 };
             }
 
@@ -164,7 +171,7 @@ namespace GoshenJimenez.ListPractiseExercise.Pages
             if (SearchParams.SortBy == null || SearchParams.SortAsc == null)
             {
                 this.Characters = characters;
-                return;
+                goto Page;
             }
 
             if (!string.IsNullOrEmpty(SearchParams.SearchBy) && !string.IsNullOrEmpty(SearchParams.Keyword))
@@ -232,6 +239,16 @@ namespace GoshenJimenez.ListPractiseExercise.Pages
             {
                 this.Characters = characters;
             }
+
+Page:
+            //Paging
+            int rem = this.Characters.Count % pageSize;
+            float pageCount = (this.Characters.Count/pageSize) + (rem > 0 ? 1 : 0);
+            int skip = (pageIndex <= pageCount ? pageSize * (pageIndex - 1) : pageSize * (Convert.ToInt32(pageCount - 1)));
+            this.Characters = this.Characters.Skip(skip).Take(pageSize).ToList();
+            SearchParams.SearchCount = this.Characters.Count;
+            SearchParams.PageCount = Convert.ToInt32(pageCount);
+
         }
 
         public class Character
@@ -249,7 +266,13 @@ namespace GoshenJimenez.ListPractiseExercise.Pages
             public string? SearchBy { get; set; }
             public string? Keyword { get; set; }            
             public string? SortBy { get; set; }
-            public bool? SortAsc { get; set; } 
+            public bool? SortAsc { get; set; }
+            public int? PageSize { get; set; }
+            public int? PageIndex { get; set; }
+            public int? PageCount { get; set;}
+            public int? SearchCount { get;set; }
+
         }
+
     }
 }
